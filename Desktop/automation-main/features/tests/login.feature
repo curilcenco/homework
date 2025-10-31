@@ -3,9 +3,8 @@ Feature: Test Scenarios for Search functionality
 
   Scenario: User can filter by Out of Stock
     Given the user opens the main page
-    When the user clicks on "Log in"
-    And enters valid credentials
-    And clicks Log in
+    When enters valid email and password
+    And clicks Login
     And clicks on Off-plan
     Then Search and filters
     And selects the sales status Out of stock

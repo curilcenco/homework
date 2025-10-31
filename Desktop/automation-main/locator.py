@@ -17,11 +17,19 @@ driver.get('https://soft.reelly.io')
 
 # By ID
 driver.find_element(By.ID, 'signinButtonSignup')
+# LOG_IN_BUTTON_A = (By.ID, "signinButtonSignup")
+# LOG_IN_BUTTON_B = (By.ID, "loginButton")
+# EMAIL_INPUT = (By.ID, "emailInput")
+# PASSWORD_INPUT = (By.ID, "passwordInput")
+# OFF_PLAN = (By.ID, "offPlanOld")
+# SEARCH_FILTERS = (By.ID, "search-and-filters-button")
+# OUT_OF_STOCK = (By.ID, "filter-badge-out_of_stock")
+# SHOW_PROJECTS = (By.ID, "all-filters-submit")
 
 
 
 # By Xpath
-
+# EMAIL_INPUT = (By.XPATH, "//input[@wized='emailInput']")
 
 # By Xpath, multiple attributes
 
@@ -30,6 +38,7 @@ driver.find_element(By.ID, 'signinButtonSignup')
 
 
 # By Xpath, using text
-
+# VERIFY_OUT_STOCK = (By.XPATH, "//div[contains(., 'Out Of Stock')]")
 
 # partial text match
+

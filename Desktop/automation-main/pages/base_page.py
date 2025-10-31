@@ -1,18 +1,22 @@
+from selenium.common import TimeoutException
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
-
 from support.logger import logger
-
 
 class Page:
 
 
+    # LOG_IN_BUTTON_A = (By.ID, "signinButtonSignup")
+    LOG_IN_BUTTON_B = (By.ID, "loginButton")
+    EMAIL_INPUT = (By.ID, "email-2")
+    PASSWORD_INPUT = (By.ID, "field")
+
     def __init__(self, driver):
         self.driver = driver
         self.base_url = 'https://soft.reelly.io'
-        self.wait = WebDriverWait(self.driver, timeout=10)
-
+        self.wait = WebDriverWait(self.driver, timeout=20)
 
     def open_url(self, url):
         logger.info(f'Opening url {url}')
@@ -20,6 +24,7 @@ class Page:
 
     def find_element(self, *locator):
         return self.driver.find_element(*locator)
+
 
     def find_elements(self, *locator):
         return self.driver.find_elements(*locator)
@@ -31,6 +36,54 @@ class Page:
     def input_text(self, text, *locator):
         logger.info(f'Entering text {text} by {locator}...')
         self.driver.find_element(*locator).send_keys(text)
+
+    def safe_click(self, *locator):
+        element = self.wait.until(
+            EC.element_to_be_clickable(locator),
+            message=f"Element not clickable by {locator}"
+        )
+        self.driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", element)
+        try:
+            element.click()
+        except Exception:
+            self.driver.execute_script("arguments[0].click();", element)
+
+
+    # def safe_input(self, locator, text):
+    #         element = WebDriverWait(self.driver, 10).until(
+    #             EC.element_to_be_clickable(locator)
+    #         )
+    #         try:
+    #             actions = ActionChains(self.driver)
+    #             actions.click(element)
+    #             actions.send_keys(text)
+    #             actions.perform()
+    #             print(f"[DEBUG] ActionChains input sent: '{text}' → {locator}")
+    #         except:
+    #             self.input_text_js(locator, text)  # fallback
+
+    # def click_and_type(self, locator, text, overlay_selector=None, timeout=15):
+    #
+    #     if overlay_selector:
+    #         self.driver.execute_script(
+    #             "var el = document.querySelector(arguments[0]);"
+    #             "if (el) { el.style.display='none'; el.style.pointerEvents='none'; }",
+    #             overlay_selector
+    #         )
+    #
+    #     element = self.driver.find_element(*EMAIL_INPUT)
+    #     self.driver.execute_script("arguments[0].focus();", element)
+    #     element.clear()
+    #     element.send_keys("i.curilcenco@gmail.com")
+
+
+    def continue_button(self):
+        self.find_element(*self.LOG_IN_BUTTON_B).click()
+
+    def send_text(self, locator, text):
+        element = self.find_element(*locator)
+        element.clear()
+        element.send_keys(text)
 
     def wait_until_clickable(self, *locator):
         self.wait.until(
@@ -76,10 +129,20 @@ class Page:
         actions.move_to_element(element)
         actions.perform()
 
-    def input_text(self, *locator, text):
-        element = self.driver.find_element(*locator)
-        element.clear()
-        element.send_keys(text)
+    # def click_element(self, *locator):
+    #     element = self.find_element(*locator)
+    #     actions = ActionChains(self.driver)
+    #     actions.move_to_element(element).click().perform()
+
+
+    def click_field(self, locator):
+        element = self.find_element(*locator)
+        ActionChains(self.driver).move_to_element(element).click().perform()
+
+    # def input_text(self, *locator, text):
+    #     element = self.driver.find_element(*locator)
+    #     element.clear()
+    #     element.send_keys(text)
 
     def verify_text(self, expected_text, *locator):
         actual_text = self.find_element(*locator).text
@@ -100,6 +163,12 @@ class Page:
         # print(f'Current url {current_url}')
         # assert expected_partial_url in current_url, f'Expected text {expected_partial_url} not in {current_url}'
         self.wait.until(EC.url_contains(expected_partial_url), message=f'URL does not contain {expected_partial_url}')
+
+
+    def verify_elements_exist(self, locator, error_message=None):
+        elements = self.driver.find_elements(*locator)
+        assert len(elements) > 0, error_message or f"No elements found for {locator}"
+        return elements
 
     def close(self):
         self.driver.close()

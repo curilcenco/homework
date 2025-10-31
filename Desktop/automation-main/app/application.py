@@ -1,15 +1,16 @@
 from pages.base_page import Page
-# from pages.cart_page import CartPage
-# from pages.header import Header
-# from pages.help_page import HelpPage
-# from pages.main_page import MainPage
-# from pages.search_results_page import SearchResultsPage
-# from pages.target_app_page import TargetAppPage
+from pages.login_page import LoginPage
+from pages.offplan_page import OffPlan
+from pages.search_filters_page import SearchFilters
 
 
 class Application:
 
+
     def __init__(self, driver):
         self.driver = driver
-
         self.base_page = Page(driver)
+        self.login_page = LoginPage(driver)
+        self.offplan_page = OffPlan(driver)
+        self.search_filters_page = SearchFilters(driver)
+

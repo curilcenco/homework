@@ -1,0 +1,63 @@
+from selenium.common import TimeoutException
+from selenium.webdriver.common.action_chains import ActionChains
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.wait import WebDriverWait
+from pages.base_page import Page
+from support.logger import logger
+
+
+
+class LoginPage(Page):
+
+
+    SEARCH_FILTER = (By.ID, "search-and-filters-button")
+    LOG_IN_BUTTON_B = (By.CSS_SELECTOR, 'a[wized="loginButton"]')
+    EMAIL_INPUT = (By.ID, "email-2")
+    PASSWORD_INPUT = (By.ID, "field")
+    OVERLAY = "div.flex-row-center-2"
+
+    def open_main_page(self):
+        self.driver.get('https://soft.reelly.io/sign-in')
+
+    def enter_credentials(self):
+        self.input_text('i.curilcenco@gmail.com', *self.EMAIL_INPUT)
+        self.input_text('Zs.2bceN48Sy7z@', *self.PASSWORD_INPUT)
+
+
+    def click_login(self):
+        self.click(*self.LOG_IN_BUTTON_B)
+
+
+    def input_text(self, text, *locator):
+        el = WebDriverWait(self.driver, 15).until(
+            EC.presence_of_element_located(locator)
+        )
+        el.send_keys(text)
+
+
+    def input_email(self):
+        el = self.find_element(*self.EMAIL_INPUT)
+        el.clear()
+        el.send_keys('i.curilcenco@gmail.com')
+
+    def input_password(self):
+        self.find_element(*self.PASSWORD_INPUT).send_keys('Zs.2bceN48Sy7z@')
+
+
+    def wait_until_clickable_click(self, *locator):
+        self.wait.until(
+            EC.element_to_be_clickable(locator),
+            message=f'Element not clickable by {locator}'
+        ).click()
+
+
+    def search_filters(self, *locator):
+        self.wait.until(
+            EC.element_to_be_clickable(locator),
+            message=f'Element not clickable by {locator}'
+        ).click()
+
+
+    def find_element(self, *locator):
+        return self.driver.find_element(*locator)
