@@ -1,112 +1,73 @@
+import os
+from datetime import datetime
 from selenium import webdriver
-from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.firefox.service import Service as FirefoxService
+from selenium.webdriver.firefox.options import Options as FirefoxOptions
 from selenium.webdriver.support.wait import WebDriverWait
-from webdriver_manager.chrome import ChromeDriverManager
+from webdriver_manager.firefox import GeckoDriverManager
 from app.application import Application
 from support.logger import logger
-import os
 import allure
-from datetime import datetime
 
 
 def browser_init(context, scenario_name):
     """
-    :param scenario_name:
-    :param context: Behave context
+    Initialize local Firefox browser (normal window)
     """
-    ### FIREFOX ###
-    from selenium.webdriver.firefox.service import Service as FirefoxService
-    from selenium.webdriver.firefox.options import Options as FirefoxOptions
-    from webdriver_manager.firefox import GeckoDriverManager
 
     options = FirefoxOptions()
-    # options.add_argument("--start-maximized")
-    # driver_path = GeckoDriverManager().install()
-    # service = FirefoxService(driver_path)
-    # context.driver = webdriver.Firefox(service=service, options=options)
-
-    # ### CHROME ###
-    # driver_path = ChromeDriverManager().install()
-    # service = Service(driver_path)
-    # context.driver = webdriver.Chrome(service=service)
-
-    # ### SAFARI ###
-    # context.driver = webdriver.Safari()
-
-    # ### HEADLESS MODE ###
-    # options = webdriver.ChromeOptions()
-    # options.add_argument('headless')
-    # service = Service(ChromeDriverManager().install())
-    # context.driver = webdriver.Chrome(options=options, service=service)
-
-    # ### HEADLESS MODE Firefox ###
-
-    options = webdriver.FirefoxOptions()
-    options.add_argument('-headless')
-
+    # options.add_argument('-headless')
     service = FirefoxService(GeckoDriverManager().install())
-    context.driver = webdriver.Firefox(options=options, service=service)
+    context.driver = webdriver.Firefox(service=service, options=options)
 
-    # ### BROWSERSTACK ###
-    # bs_user = ''
-    # bs_key = ''
-    # url = f'http://{bs_user}:{bs_key}@hub-cloud.browserstack.com/wd/hub'
-    # options = Options()
-    # bstack_options = {
-    #     "os": "Windows",
-    #     "osVersion": "11",
-    #     "browserName": "Firefox",
-    #     "sessionName": scenario_name,
-    # }
-    # options.set_capability('bstack:options', bstack_options)
-    # context.driver = webdriver.Remote(command_executor=url, options=options)
 
     context.driver.maximize_window()
     context.driver.implicitly_wait(4)
     context.driver.wait = WebDriverWait(context.driver, timeout=10)
+
+    # Создаем объект приложения
     context.app = Application(context.driver)
+
+    logger.info(f"🏠 Running locally in normal Firefox window for scenario: {scenario_name}")
 
 
 def before_scenario(context, scenario):
-    print('\nStarted scenario: ', scenario.name)
-    logger.info(f'\nStarted scenario: {scenario.name}')
+    print(f"\nStarted scenario: {scenario.name}")
+    logger.info(f"\nStarted scenario: {scenario.name}")
     browser_init(context, scenario.name)
 
 
 def before_step(context, step):
-    logger.info(f'Started step {step}')
-    print('\nStarted step: ', step)
+    print(f"\nStarted step: {step}")
+    logger.info(f"Started step: {step}")
 
 
 def after_step(context, step):
     if step.status == 'failed':
-        logger.warning(f'Step failed {step}')
-        print('\nStep failed: ', step)
-
-
-def after_scenario(context, scenario):
-    context.driver.quit()
-    print(f"Browser closed for scenario: {scenario.name}")
-
-
-def after_step_allure(context, step):
-    if step.status == 'failed':
-        print('\n❌ Step failed: ', step.name)
-
-        screenshots_dir = 'screenshots'
-        if not os.path.exists(screenshots_dir):
-            os.makedirs(screenshots_dir)
-
-        timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-        scenario_name = context.scenario.name.replace(" ", "_")
-        step_name = step.name.replace(" ", "_")
-        screenshot_name = f"{scenario_name}__{step_name}__{timestamp}.png"
-        screenshot_path = os.path.join(screenshots_dir, screenshot_name)
-
+        print(f"\nStep failed: {step}")
+        logger.warning(f"Step failed: {step}")
+        # Allure
+        screenshot_name = f"{step.name}_{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.png"
+        screenshot_path = os.path.join("screenshots", screenshot_name)
+        os.makedirs("screenshots", exist_ok=True)
         context.driver.save_screenshot(screenshot_path)
-
         allure.attach.file(
             screenshot_path,
             name=f"Screenshot_{step.name}",
             attachment_type=allure.attachment_type.PNG
         )
+
+
+def after_scenario(context, scenario):
+    if scenario.status == "failed":
+        screenshot_name = f"{scenario.name}_{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.png"
+        screenshot_path = os.path.join("screenshots", screenshot_name)
+        os.makedirs("screenshots", exist_ok=True)
+        context.driver.save_screenshot(screenshot_path)
+        allure.attach.file(
+            screenshot_path,
+            name=f"Screenshot_{scenario.name}",
+            attachment_type=allure.attachment_type.PNG
+        )
+    context.driver.quit()
+    print(f"Browser closed for scenario: {scenario.name}")
