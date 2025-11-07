@@ -10,3 +10,5 @@ Feature: Test Scenarios for Search functionality
     And selects the sales status Out of stock
     And clicks "Show projects"
     Then verify that only "Out of Stock" projects are displayed
+
+

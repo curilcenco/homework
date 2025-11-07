@@ -1,3 +1,4 @@
+from time import sleep
 from selenium.common import TimeoutException
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.support import expected_conditions as EC
@@ -7,8 +8,12 @@ from pages.base_page import Page
 from support.logger import logger
 
 
+
 class OffPlan(Page):
-    OFF_PLAN = (By.CSS_SELECTOR, "a[wized='newOffPlanLink']")
+    OFF_PLAN = (By.XPATH, "//a[@wized='newOffPlanLink']")
 
     def click_offplan(self):
+        sleep(5)
         self.safe_click(*self.OFF_PLAN)
+
+

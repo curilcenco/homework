@@ -1,6 +1,5 @@
 from behave import given, when, then
 from selenium.webdriver.common.by import By
-from time import sleep
 from pages.base_page import Page
 
 
@@ -22,12 +21,13 @@ def button_login(context):
 @when('clicks on Off-plan')
 def button_off_plan(context):
     context.app.offplan_page.click_offplan()
-    print('done')
+    print('start')
 
 @then('Search and filters')
 def button_filters(context):
-    print('start')
-    context.app.search_filters_page.click_search_filters()
+    print('enter filters')
+    context.app.login_page.enter_filters()
+    context.app.search_filters_page.click_search_filters.click()
 
 
 @then('selects the sales status Out of stock')

@@ -1,3 +1,5 @@
+from time import sleep
+
 from selenium.common import TimeoutException
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.support import expected_conditions as EC
@@ -26,6 +28,7 @@ class LoginPage(Page):
 
 
     def click_login(self):
+        sleep(2)
         self.click(*self.LOG_IN_BUTTON_B)
 
 

@@ -5,18 +5,22 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 from pages.base_page import Page
 from support.logger import logger
+from time import sleep
 
 
 
 class SearchFilters(Page):
 
-    SEARCH_FILTER = (By.CSS_SELECTOR, 'button[data-test-id="search-and-filters-button"]')
+    SEARCH_FILTER = (By.CSS_SELECTOR, '[data-test-id="search-and-filters-button"]')
     OUT_OF_STOCK = (By.CSS_SELECTOR, '[data-test-id="filter-badge-out_of_stock"]')
     SHOW_PROJECTS = (By.CSS_SELECTOR, '[data-test-id="all-filters-submit"]')
     VERIFY_OUT_STOCK = (By.CSS_SELECTOR, 'span[data-test-id="project-card-sale-status"]')
 
+
     def click_search_filters(self):
+        sleep(5)
         self.click(*self.SEARCH_FILTER)
+
 
     def sales_status(self):
         self.wait_until_clickable_click(*self.OUT_OF_STOCK).click()

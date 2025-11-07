@@ -40,14 +40,7 @@ class Page:
     def safe_click(self, *locator):
         element = self.wait.until(
             EC.element_to_be_clickable(locator),
-            message=f"Element not clickable by {locator}"
-        )
-        self.driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", element)
-        try:
-            element.click()
-        except Exception:
-            self.driver.execute_script("arguments[0].click();", element)
-
+            message=f"Element not clickable by {locator}")
 
     # def safe_input(self, locator, text):
     #         element = WebDriverWait(self.driver, 10).until(
