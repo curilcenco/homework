@@ -16,7 +16,7 @@ class Page:
     def __init__(self, driver):
         self.driver = driver
         self.base_url = 'https://soft.reelly.io'
-        self.wait = WebDriverWait(self.driver, timeout=20)
+        self.wait = WebDriverWait(self.driver, timeout=5)
 
     def open_url(self, url):
         logger.info(f'Opening url {url}')
@@ -38,36 +38,9 @@ class Page:
         self.driver.find_element(*locator).send_keys(text)
 
     def safe_click(self, *locator):
-        element = self.wait.until(
+        self.wait.until(
             EC.element_to_be_clickable(locator),
-            message=f"Element not clickable by {locator}")
-
-    # def safe_input(self, locator, text):
-    #         element = WebDriverWait(self.driver, 10).until(
-    #             EC.element_to_be_clickable(locator)
-    #         )
-    #         try:
-    #             actions = ActionChains(self.driver)
-    #             actions.click(element)
-    #             actions.send_keys(text)
-    #             actions.perform()
-    #             print(f"[DEBUG] ActionChains input sent: '{text}' → {locator}")
-    #         except:
-    #             self.input_text_js(locator, text)  # fallback
-
-    # def click_and_type(self, locator, text, overlay_selector=None, timeout=15):
-    #
-    #     if overlay_selector:
-    #         self.driver.execute_script(
-    #             "var el = document.querySelector(arguments[0]);"
-    #             "if (el) { el.style.display='none'; el.style.pointerEvents='none'; }",
-    #             overlay_selector
-    #         )
-    #
-    #     element = self.driver.find_element(*EMAIL_INPUT)
-    #     self.driver.execute_script("arguments[0].focus();", element)
-    #     element.clear()
-    #     element.send_keys("i.curilcenco@gmail.com")
+            message=f"Element not clickable by {locator}").click()
 
 
     def continue_button(self):
@@ -122,20 +95,11 @@ class Page:
         actions.move_to_element(element)
         actions.perform()
 
-    # def click_element(self, *locator):
-    #     element = self.find_element(*locator)
-    #     actions = ActionChains(self.driver)
-    #     actions.move_to_element(element).click().perform()
-
 
     def click_field(self, locator):
         element = self.find_element(*locator)
         ActionChains(self.driver).move_to_element(element).click().perform()
 
-    # def input_text(self, *locator, text):
-    #     element = self.driver.find_element(*locator)
-    #     element.clear()
-    #     element.send_keys(text)
 
     def verify_text(self, expected_text, *locator):
         actual_text = self.find_element(*locator).text

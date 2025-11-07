@@ -28,15 +28,8 @@ class LoginPage(Page):
 
 
     def click_login(self):
-        sleep(2)
-        self.click(*self.LOG_IN_BUTTON_B)
-
-
-    def input_text(self, text, *locator):
-        el = WebDriverWait(self.driver, 15).until(
-            EC.presence_of_element_located(locator)
-        )
-        el.send_keys(text)
+        sleep(4)
+        self.click(* self.LOG_IN_BUTTON_B)
 
 
     def input_email(self):
@@ -48,19 +41,8 @@ class LoginPage(Page):
         self.find_element(*self.PASSWORD_INPUT).send_keys('Zs.2bceN48Sy7z@')
 
 
-    def wait_until_clickable_click(self, *locator):
-        self.wait.until(
-            EC.element_to_be_clickable(locator),
-            message=f'Element not clickable by {locator}'
-        ).click()
-
-
     def search_filters(self, *locator):
         self.wait.until(
             EC.element_to_be_clickable(locator),
             message=f'Element not clickable by {locator}'
         ).click()
-
-
-    def find_element(self, *locator):
-        return self.driver.find_element(*locator)

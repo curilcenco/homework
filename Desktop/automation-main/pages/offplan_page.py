@@ -10,10 +10,11 @@ from support.logger import logger
 
 
 class OffPlan(Page):
-    OFF_PLAN = (By.XPATH, "//a[@wized='newOffPlanLink']")
+    OFF_PLAN = (By.CSS_SELECTOR, 'div[class="menu-block"] a[wized="newOffPlanLink"]')
 
     def click_offplan(self):
-        sleep(5)
-        self.safe_click(*self.OFF_PLAN)
+        sleep(10)
+        self.click(*self.OFF_PLAN)
+
 
 

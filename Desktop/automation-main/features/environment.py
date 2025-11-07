@@ -1,9 +1,11 @@
 import os
 from datetime import datetime
 from selenium import webdriver
-from selenium.webdriver.firefox.service import Service as FirefoxService
+from selenium.webdriver.firefox.service import Service as FirefoxService, Service
 from selenium.webdriver.firefox.options import Options as FirefoxOptions
+from selenium.webdriver.chrome.options import Options as ChromeOptions
 from selenium.webdriver.support.wait import WebDriverWait
+from webdriver_manager.chrome import ChromeDriverManager
 from webdriver_manager.firefox import GeckoDriverManager
 from app.application import Application
 from support.logger import logger
@@ -11,12 +13,20 @@ import allure
 
 
 def create_firefox_driver():
-    options = FirefoxOptions()
-    # options.add_argument('-headless')
-    service = FirefoxService(GeckoDriverManager().install())
-    driver = webdriver.Firefox(service=service, options=options)
-    driver.set_window_size(360, 640)
-    logger.info("Local Firefox (360x640)")
+    # options = FirefoxOptions()
+    # # options.add_argument('-headless')
+    # service = FirefoxService(GeckoDriverManager().install())
+    # driver = webdriver.Firefox(service=service, options=options)
+    # driver.set_window_size(360, 640)
+    # logger.info("Local Firefox (360x640)")
+    # return driver
+   # mobile_emulation = {"deviceName": "Nexus 5"}
+    chrome_options = webdriver.ChromeOptions()
+    #chrome_options.add_experimental_option("mobileEmulation", mobile_emulation)
+    driver_path = ChromeDriverManager().install()
+    service = Service(driver_path)
+    driver = webdriver.Chrome(service=service, options=chrome_options)
+   # driver.execute_script("document.body.style.zoom='50%'")
     return driver
 
 
@@ -25,19 +35,19 @@ def create_browserstack_driver():
     ACCESS_KEY = os.getenv("BROWSERSTACK_ACCESS_KEY")
 
     if not USERNAME or not ACCESS_KEY:
-        raise Exception("BROWSERSTACK_USERNAME и BROWSERSTACK_ACCESS_KEY не заданы")
+        raise Exception("BROWSERSTACK_USERNAME vs BROWSERSTACK_ACCESS_KEY")
 
     browserstack_url = f"https://{USERNAME}:{ACCESS_KEY}@hub-cloud.browserstack.com/wd/hub"
 
     options = FirefoxOptions()
     options.set_capability("browserName", "Firefox")
-    options.set_capability("browserVersion", "latest")
     options.set_capability("bstack:options", {
-        "os": "Windows",
-        "osVersion": "10",
-        "buildName": "Firefox_Build_2",
-        "sessionName": "Automation test run",
-        "local": "false",
+        "deviceName": "Samsung Galaxy S22",
+        "realMobile": "true",
+        "osVersion": "12.0",
+        "projectName": "Mobile Tests",
+        "buildName": "Mobile_Build_1",
+        "sessionName": "Automation test on mobile",
         "seleniumVersion": "4.24.0"
     })
 
@@ -45,10 +55,8 @@ def create_browserstack_driver():
         command_executor=browserstack_url,
         options=options
     )
-    driver.set_window_size(1920, 1080)
-    logger.info("Remote BrowserStack Firefox (1920x1080)")
+    logger.info("Remote BrowserStack Mobile Firefox (Samsung Galaxy S22)")
     return driver
-
 
 def browser_init(context, scenario_name):
 
@@ -57,6 +65,7 @@ def browser_init(context, scenario_name):
         context.driver = create_browserstack_driver()
     else:
         context.driver = create_firefox_driver()
+
 
     context.driver.implicitly_wait(4)
     context.driver.wait = WebDriverWait(context.driver, timeout=10)
