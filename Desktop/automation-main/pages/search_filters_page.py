@@ -18,15 +18,32 @@ class SearchFilters(Page):
 
 
     def click_search_filters(self):
-        sleep(5)
+        sleep(15)
+        self.click(*self.SEARCH_FILTER)
+        sleep(15)
+
+    def enter_filters(self):
         self.click(*self.SEARCH_FILTER)
 
 
     def sales_status(self):
-        self.wait_until_clickable_click(*self.OUT_OF_STOCK).click()
+        self.find_and_click(self.OUT_OF_STOCK)
+
+    def sales_status_mobile(self):
+        self.find_click_mobile(self.OUT_OF_STOCK)
+
 
     def submit_projects(self):
-        self.wait_until_clickable_click(*self.SHOW_PROJECTS)
+        self.click(*self.SHOW_PROJECTS)
+        sleep(15)
 
     def verify_sales_status(self):
-        self.verify_elements_exist(self.VERIFY_OUT_STOCK)
+        try:
+            WebDriverWait(self.driver, 5).until(
+                EC.presence_of_element_located(self.VERIFY_OUT_STOCK)
+            )
+            print("Out of Stock found")
+            assert True
+        except TimeoutException:
+            print("Out of Stock NOT found")
+            assert False

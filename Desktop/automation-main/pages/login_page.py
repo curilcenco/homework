@@ -28,8 +28,8 @@ class LoginPage(Page):
 
 
     def click_login(self):
-        sleep(4)
         self.click(* self.LOG_IN_BUTTON_B)
+        sleep(10)
 
 
     def input_email(self):

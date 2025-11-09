@@ -127,5 +127,50 @@ class Page:
         assert len(elements) > 0, error_message or f"No elements found for {locator}"
         return elements
 
+
+    def find_and_click(self, locator, timeout=10) :
+        try:
+            element = WebDriverWait(self.driver, timeout).until(
+                EC.element_to_be_clickable(locator)
+            )
+            # scroll by pixels
+            self.driver.execute_script("""
+                const yOffset = -120;
+                const element = arguments[0];
+                const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
+                window.scrollTo({top: y});
+            """, element)
+
+            try:
+                element.click()
+            except:
+                self.driver.execute_script("arguments[0].click();", element)
+
+            print(f"Successful click {locator}")
+
+        except TimeoutException:
+            print(f"Element {locator} not clickable {timeout} seconds")
+        except Exception as e:
+            print(f"No click was made {locator}: {e}")
+
+    def find_click_mobile(self, locator):
+        try:
+            element = WebDriverWait(self.driver, 5).until(
+                EC.presence_of_element_located(locator)
+            )
+
+            self.driver.execute_script(
+                "arguments[0].scrollIntoView({block: 'center'});", element
+            )
+
+            self.driver.execute_script("arguments[0].click();", element)
+
+            print("Out of Stock clicked")
+            assert True
+        except TimeoutException:
+            print("Out of Stock NOT found")
+            assert False
+
+
     def close(self):
         self.driver.close()

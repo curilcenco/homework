@@ -11,10 +11,12 @@ from support.logger import logger
 
 class OffPlan(Page):
     OFF_PLAN = (By.CSS_SELECTOR, 'div[class="menu-block"] a[wized="newOffPlanLink"]')
+    OFF_PLAN_MOBILE = (By.CSS_SELECTOR, 'div[class="menu-mobile hero-menu"] a[wized="newOffPlanLink"]')
 
     def click_offplan(self):
-        sleep(10)
         self.click(*self.OFF_PLAN)
 
+    def click_offplan_mobile(self):
+        self.click(*self.OFF_PLAN_MOBILE)
 
 
