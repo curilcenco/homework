@@ -1,5 +1,6 @@
 from pages.base_page import Page
 from pages.login_page import LoginPage
+from pages.settings_page import SettingsPage
 
 
 class Application:
@@ -8,3 +9,4 @@ class Application:
         self.driver = driver
         self.base_page = Page(driver)
         self.login_page = LoginPage(self.driver)
+        self.settings_page = SettingsPage(self.driver)

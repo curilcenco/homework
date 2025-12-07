@@ -16,7 +16,17 @@ class OffPlan(Page):
     def click_offplan(self):
         self.click(*self.OFF_PLAN)
 
-    def click_offplan_mobile(self):
-        self.click(*self.OFF_PLAN_MOBILE)
+    # def click_offplan_mobile(self):
+    #     self.find_click_mobile(self.OFF_PLAN_MOBILE)
 
+def click_offplan_mobile(self):
+    try:
+        element = WebDriverWait(self.driver, 15).until(
+            EC.element_to_be_clickable(OFF_PLAN_MOBILE)
+        )
+        element.click()
+        print("Off-plan clicked")
+    except TimeoutException:
+        print("Off-plan NOT found")
+        raise
 

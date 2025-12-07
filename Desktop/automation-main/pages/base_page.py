@@ -25,7 +25,6 @@ class Page:
     def find_element(self, *locator):
         return self.driver.find_element(*locator)
 
-
     def find_elements(self, *locator):
         return self.driver.find_elements(*locator)
 
@@ -153,16 +152,14 @@ class Page:
         except Exception as e:
             print(f"No click was made {locator}: {e}")
 
-    def find_click_mobile(self, locator):
+    def find_click_mobile_local(self, locator):
         try:
             element = WebDriverWait(self.driver, 5).until(
                 EC.presence_of_element_located(locator)
             )
-
             self.driver.execute_script(
                 "arguments[0].scrollIntoView({block: 'center'});", element
             )
-
             self.driver.execute_script("arguments[0].click();", element)
 
             print("Out of Stock clicked")
@@ -171,6 +168,28 @@ class Page:
             print("Out of Stock NOT found")
             assert False
 
+    def find_click_mobile(self, locator):
+        try:
+            element = WebDriverWait(self.driver, 10).until(
+                EC.presence_of_element_located(locator)
+            )
+
+            self.driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", element)
+            # #TouchActions
+            # try:
+            #     touch = TouchActions(self.driver)
+            #     touch.tap(element).perform()
+            # except Exception as e:
+            #     # ActionChains
+            #     actions = ActionChains(self.driver)
+            #     actions.move_to_element(element).click().perform()
+            #
+            # print("Element clicked successfully")
+            # assert True
+
+        except TimeoutException:
+            print("Element NOT found")
+            assert False
 
     def close(self):
         self.driver.close()

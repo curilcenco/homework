@@ -3,6 +3,9 @@ from pages.base_page import Page
 from pages.login_page import LoginPage
 from pages.offplan_page import OffPlan
 from pages.search_filters_page import SearchFilters
+from pages.settings_page import SettingsPage
+
+
 # from pages.login_mobile_page import LoginMobilePage
 
 
@@ -16,4 +19,5 @@ class Application:
         self.offplan_page = OffPlan(driver)
         self.search_filters_page = SearchFilters(driver)
         # self.login_mobile_page = LoginMobilePage(driver)
+        self.settings_page = SettingsPage(driver)
 

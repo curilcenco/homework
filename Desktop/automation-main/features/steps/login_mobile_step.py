@@ -18,6 +18,7 @@ def button_login(context):
 
 @when('clicks on Off-plan emulation')
 def button_off_plan(context):
+    print('pohhhh')
     context.app.offplan_page.click_offplan_mobile()
 
 
